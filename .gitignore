@@ -144,4 +144,4 @@ dmypy.json
 .history/
 
 # logs
-logs/
+# logs/
