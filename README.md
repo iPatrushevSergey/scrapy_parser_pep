@@ -1,7 +1,4 @@
-![Python](https://img.shields.io/pypi/pyversions/scrapy?color=brightgreen&style=plastic)![Scrapy](https://img.shields.io/badge/scrapy-2.7.0-brightgreen>)
-
-![Stars](https://img.shields.io/github/gist/stars/123?logoColor=yellow&style=social)
-![Fork](https://img.shields.io/github/forks/ipatrushevsergey/scrapy_parser_pep?logoColor=green&style=social)
+![Python](https://img.shields.io/pypi/pyversions/scrapy?color=brightgreen&style=plastic) ![Scrapy](https://img.shields.io/badge/scrapy-2.7.0-brightgreen>) 
 
 # Проект 19-го спринта "Асинхронный парсер PEP"
 
