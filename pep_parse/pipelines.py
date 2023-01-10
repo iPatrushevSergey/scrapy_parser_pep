@@ -1,9 +1,9 @@
 import csv
 import datetime as dt
-import logging
 
 from pep_parse.constants import BASE_DIR, DATETIME_FORMAT, ERROR_TEXT
 from pep_parse.items import PepParseItem
+from pep_parse.loggers import pipelines_logger
 from pep_parse.spiders.pep import PepSpider
 
 
@@ -42,8 +42,18 @@ class PepParsePipeline:
             (status,
              quantity) for status, quantity in self.peps_statuses.items()
         ]
-        results_dir = BASE_DIR / 'results'
-        results_dir.mkdir(exist_ok=True)
+        try:
+            results_dir = BASE_DIR / 'results'
+            results_dir.mkdir(exist_ok=True)
+        except FileExistsError as error:
+            pipelines_logger.error(ERROR_TEXT, error)
+            exit()
+        except FileNotFoundError as error:
+            pipelines_logger.error(ERROR_TEXT, error)
+            exit()
+        except Exception as error:
+            pipelines_logger.error(ERROR_TEXT, error)
+            exit()
         now = dt.datetime.now()
         now_formated = now.strftime(DATETIME_FORMAT)
         file_name = f'status_summary_{now_formated}.csv'
@@ -54,13 +64,15 @@ class PepParsePipeline:
                 pepwriter.writerow(('Статус', 'Количество'),)
                 pepwriter.writerows(pep_rows)
                 pepwriter.writerow(('Total', f'{total_peps}'),)
-            logging.info(f'The results file has been saved: {file_path}')
+            pipelines_logger.info(
+                f'The results file has been saved: {file_path}'
+            )
         except OSError as error:
-            logging.error(ERROR_TEXT, error)
+            pipelines_logger.error(ERROR_TEXT, error)
             exit()
         except csv.Error as error:
-            logging.error(ERROR_TEXT, error)
+            pipelines_logger.error(ERROR_TEXT, error)
             exit()
         except Exception as error:
-            logging.error(ERROR_TEXT, error)
+            pipelines_logger.error(ERROR_TEXT, error)
             exit()

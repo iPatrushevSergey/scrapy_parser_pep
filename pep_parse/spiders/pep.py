@@ -1,9 +1,9 @@
-import logging
-
 import scrapy
 from scrapy.http.response.html import HtmlResponse
 
 from pep_parse.items import PepParseItem
+from pep_parse.loggers import pep_logger
+from pep_parse.settings import ALLOWED_DOMAINS, START_URLS
 
 
 class PepSpider(scrapy.Spider):
@@ -14,14 +14,15 @@ class PepSpider(scrapy.Spider):
     the number, name and status of the pep.
     """
     name = 'pep'
-    allowed_domains = ['peps.python.org']
-    start_urls = ['https://peps.python.org/']
+    allowed_domains = ALLOWED_DOMAINS
+    start_urls = START_URLS
 
     def parse(self, response: HtmlResponse) -> None:
         """
         Parses links to individual peps pages and navigate to them
         by calling the `parse_pep` method.
         """
+        pep_logger.info('Parser start')
         try:
             for pep_row in response.css(
                     'section[id="numerical-index"] tbody tr'):
@@ -29,8 +30,11 @@ class PepSpider(scrapy.Spider):
                     'td a::attr(href)').get().lstrip('/')
                 yield response.follow(pep_link, callback=self.parse_pep)
         except Exception as error:
-            logging.error(f'There was a problem with parsing. Error: {error}',
-                          exc_info=True, stack_info=True)
+            pep_logger.error(
+                f'There was a problem with parsing. Error: {error}',
+                exc_info=True,
+                stack_info=True
+            )
 
     def parse_pep(self, response: HtmlResponse) -> PepParseItem:
         """
@@ -48,5 +52,8 @@ class PepSpider(scrapy.Spider):
             }
             yield PepParseItem(data)
         except Exception as error:
-            logging.error(f'There was a problem whith parsing. Error: {error}',
-                          exc_info=True, stack_info=True)
+            pep_logger.error(
+                f'There was a problem whith parsing. Error: {error}',
+                exc_info=True,
+                stack_info=True
+            )

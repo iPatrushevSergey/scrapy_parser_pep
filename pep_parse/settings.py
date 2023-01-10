@@ -25,3 +25,6 @@ LOG_FILE = 'logs/logs.py'
 LOG_LEVEL = logging.INFO
 LOG_FORMAT = LOG_FORMAT
 LOG_DATEFORMAT = LOGGER_DATETIME_FORMAT
+
+ALLOWED_DOMAINS = ['peps.python.org']
+START_URLS = ['https://peps.python.org/']
